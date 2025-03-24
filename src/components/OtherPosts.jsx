@@ -42,11 +42,11 @@ export default function OtherPosts({ currentPostId }) {
                 alt={post.title}
                 width={100}
                 height={100}
-                className="object-cover"
+                className="object-cover "
               />
             )}
             <div>
-              <h3 className="font-light text-sm line-clamp-2">{post.title}</h3>
+              <h3 className="font-light text-sm line-clamp-3">{post.title}</h3>
               {/* <p className="text-sm text-gray-600">
                 By {post.author.name}
               </p> */}
