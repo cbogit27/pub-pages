@@ -33,8 +33,11 @@ export default function Home() {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
+  <div className="relative flex items-center justify-center">
+    <div className="absolute h-12 w-12 border-4 border-gray-600 rounded-full animate-spin border-t-transparent"></div>
+  </div>
+</div>
+
     );
   }
 
@@ -55,7 +58,7 @@ export default function Home() {
       viewport={{ once: true, amount: 0.8 }}
       transition={{  type: "spring", delay: 1,duration: 3.5,opacity: 1,
       layout: { duration: 1 } }}
-      className="text-3xl font-bold uppercase mb-8 text-center">Latest Posts</motion.h1>
+      className="text-3xl font-bold uppercase mb-8 text-center text-transparent bg-clip-text bg-gradient-to-br from-gray-600 to-gray-900">Latest Posts</motion.h1>
       {posts.length === 0 ? (
         <div className="text-center py-8">
           <p className="text-gray-500">No posts available yet.</p>

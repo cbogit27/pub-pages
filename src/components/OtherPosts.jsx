@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import OtherPostsSkeleton from './OtherPostSkelecton';
 
 export default function OtherPosts({ currentPostId }) {
   const [posts, setPosts] = useState([]);
@@ -24,7 +25,7 @@ export default function OtherPosts({ currentPostId }) {
     fetchPosts();
   }, [currentPostId]);
 
-  if (loading) return <div>Loading posts...</div>;
+  if (loading) return <OtherPostsSkeleton count={1}/>;
 
   return (
     <div className="space-y-8">

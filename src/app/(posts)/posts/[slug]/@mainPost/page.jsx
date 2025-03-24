@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { format } from "date-fns";
 import CommentSection from "@/components/CommentSection";
+import PostSkeleton from "../../components/MainPostSkelecton";
 
 export default function PostPage() {
   const { slug } = useParams();
@@ -26,7 +27,7 @@ export default function PostPage() {
     fetchPost();
   }, [slug]);
 
-  if (loading) return <div className="text-center p-8">Loading...</div>;
+  if (loading) return <PostSkeleton/>;
   if (error) return <div className="text-red-500 p-8">{error}</div>;
 
   return (
