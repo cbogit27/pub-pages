@@ -42,7 +42,9 @@ export default function PostsListPage() {
   if (loading || status === "loading") {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        <div className="relative flex items-center justify-center">
+          <div className="absolute h-12 w-12 border-4 border-slate-800 rounded-full animate-spin border-t-transparent"></div>
+        </div>
       </div>
     );
   }
