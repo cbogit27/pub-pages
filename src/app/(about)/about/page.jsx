@@ -30,26 +30,23 @@ export default function AboutPage(){
                     </div>
 
                     <div className="flex mt-12 space-x-10">
-                        <motion.div 
-                            whileHover={{ rotate: 15, scale: 1.3 }}
-                            transition={{ delay: 0.5, duration: 1.0 }}
+                        <div 
+                        
                             className="cursor-pointer">
                             <PiDiscordLogoThin size={30} className="hover:text-gray-200/40 "/>
-                        </motion.div>
+                        </div>
 
-                        <motion.div
-                            whileHover={{ rotate: 15, scale: 1.3 }}
-                            transition={{ delay: 0.5, duration: 1.0 }}
+                        <div
+                
                             className="cursor-pointer">
                             <PiInstagramLogoThin size={30} className="hover:text-gray-200/40 "/>
-                        </motion.div>
+                        </div>
 
-                        <motion.div
-                            whileHover={{ rotate: 15, scale: 1.3 }}
-                            transition={{ delay: 0.5, duration: 1.0 }}
+                        <div
+            
                             className="cursor-pointer">
                             <RiTwitterXLine size={30} className="hover:text-gray-200/40 "/>
-                        </motion.div>
+                        </div>
                     </div>
 
                     <div className="mt-12">
@@ -58,7 +55,7 @@ export default function AboutPage(){
             </div>
 
 
-            <div className="md:w-28 flex-auto bg-slate-800/40 text-gray-200 py-8 px-2">
+            <div className="md:w-28 flex-auto bg-slate-800/40 text-gray-200 py-8 px-2 md:px-8">
             <div className=" space-y-12">
             <div className="justify-start text-start p-2">
             <h3 className="text-xl font-semibold uppercase tracking-wide">Subscribe,</h3>
