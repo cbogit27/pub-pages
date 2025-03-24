@@ -17,14 +17,14 @@ export default function AddDashboardPostForm({ initialData, onSubmit }) {
     },
   });
 
-  const [formData, setFormData] = useState(() => ({
+  const [formData, setFormData] = useState({
     title: initialData?.title || "",
     categoryId: initialData?.categoryId || "",
     description: initialData?.description || "",
     content: initialData?.content || "",
     image: initialData?.image || null,
     published: initialData?.published || false
-  }));
+  });
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -32,6 +32,7 @@ export default function AddDashboardPostForm({ initialData, onSubmit }) {
   const [categories, setCategories] = useState([]);
   const [loadingData, setLoadingData] = useState(true);
 
+  // Redirect if not authenticated or not admin
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/auth/signin");
@@ -41,29 +42,31 @@ export default function AddDashboardPostForm({ initialData, onSubmit }) {
     if (status === "authenticated" && session.user.role !== "ADMIN") {
       toast.error("Admin privileges required");
       router.push("/dashboard");
-      return;
     }
   }, [status, session, router]);
 
+  // Fetch required data
   useEffect(() => {
     if (status !== "authenticated") return;
 
-    const fetchRequiredData = async () => {
+    const fetchData = async () => {
       try {
-        const categoriesRes = await fetch('/api/categories');
+        const [categoriesRes] = await Promise.all([
+          fetch('/api/categories')
+        ]);
 
         if (!categoriesRes.ok) throw new Error('Failed to fetch categories');
         
         const categoriesData = await categoriesRes.json();
         setCategories(categoriesData);
       } catch (error) {
-        toast.error(error.message || "Failed to load data");
+        toast.error(error.message || "Failed to load required data");
       } finally {
         setLoadingData(false);
       }
     };
 
-    fetchRequiredData();
+    fetchData();
   }, [status]);
 
   const handleInputChange = (e) => {
@@ -72,7 +75,10 @@ export default function AddDashboardPostForm({ initialData, onSubmit }) {
       ...prev, 
       [name]: value 
     }));
-    setErrors(prev => ({ ...prev, [name]: "" }));
+    // Clear error when user types
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: "" }));
+    }
   };
 
   const handleImageUpload = (file) => {
@@ -100,18 +106,18 @@ export default function AddDashboardPostForm({ initialData, onSubmit }) {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleFormSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
     
     setIsSubmitting(true);
-    const toastId = toast.loading(initialData ? "Updating post..." : "Saving post...");
+    const toastId = toast.loading(initialData ? "Updating post..." : "Creating post...");
 
     try {
       const formPayload = new FormData();
       formPayload.append("title", formData.title);
       formPayload.append("categoryId", formData.categoryId);
-      formPayload.append("description", formData.description || "");
+      formPayload.append("description", formData.description);
       formPayload.append("content", formData.content);
       formPayload.append("published", formData.published.toString());
       
@@ -125,31 +131,40 @@ export default function AddDashboardPostForm({ initialData, onSubmit }) {
       
       const method = initialData ? 'PUT' : 'POST';
       
-      const response = await fetch("/api/posts", {
-        method: "POST",
+      const response = await fetch(url, {
+        method,
         body: formPayload,
       });
 
-      if (initialData && response.ok) {
-        const data = await response.json();
-        if (data.newSlug) {
-          router.push(`/dashboard/posts/${data.newSlug}`);
-          return;
-        }
-      }
-      
       const data = await response.json();
-      
+
       if (!response.ok) {
-        throw new Error(data.error || "Failed to create post");
+        // Handle title conflict specifically
+        if (response.status === 409 && data.error.includes("Title already exists")) {
+          throw new Error("A post with this title already exists. Please choose a different title.");
+        }
+        throw new Error(data.error || "Failed to save post");
       }
+
+      // Handle successful response
+      toast.success(initialData ? "Post updated successfully" : "Post created successfully", { id: toastId });
       
-      toast.success("Post created successfully", { id: toastId });
-      router.push("/dashboard");
-      
+      if (initialData && data.newSlug) {
+        router.push(`/dashboard/${data.newSlug}`);
+      } else {
+        router.push("/dashboard/");
+      }
+
+      if (onSubmit) onSubmit(data);
+
     } catch (error) {
       console.error("Form submission error:", error);
-      toast.error(error.message || "Failed to save post", { id: toastId });
+      toast.error(error.message, { id: toastId });
+      
+      // Highlight the title field if it's a conflict
+      if (error.message.includes("title already exists")) {
+        setErrors(prev => ({ ...prev, title: error.message }));
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -175,38 +190,35 @@ export default function AddDashboardPostForm({ initialData, onSubmit }) {
         </div>
       )}
 
-      <form
-        className="space-y-6 bg-gray-800 rounded-lg shadow-md p-4"
-        onSubmit={handleFormSubmit}
-      >
+      <form onSubmit={handleSubmit} className="space-y-6 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Title Field */}
-          <div className="col-span-1 md:col-span-2">
+          <div className="col-span-2">
             <Input
-              label="Title"
+              label="Post Title"
               name="title"
               value={formData.title}
               onChange={handleInputChange}
-              placeholder="Enter post title"
+              placeholder="Enter a unique title for your post"
               error={errors.title}
               required
             />
           </div>
 
-          {/* Category Field */}
+          {/* Category Selection */}
           <div className="col-span-1">
             <Select
               label="Category"
               name="categoryId"
-              value={formData.categoryId || ""}
+              value={formData.categoryId}
               onChange={handleInputChange}
               options={categories}
               optionlabel="name"
-              className="w-full"
               error={errors.categoryId}
               disabled={categories.length === 0}
+              required
             >
-              <option value="">{categories.length ? 'Select a category' : 'No categories available'}</option>
+              <option value="">Select a category</option>
               {categories.map(category => (
                 <option key={category.id} value={category.id}>
                   {category.name}
@@ -216,8 +228,8 @@ export default function AddDashboardPostForm({ initialData, onSubmit }) {
           </div>
 
           {/* Publish Toggle */}
-          <div className="col-span-1">
-            <label className="flex items-center space-x-2">
+          <div className="col-span-1 flex items-center">
+            <label className="flex items-center space-x-2 cursor-pointer">
               <input
                 type="checkbox"
                 name="published"
@@ -226,16 +238,16 @@ export default function AddDashboardPostForm({ initialData, onSubmit }) {
                   ...prev,
                   published: e.target.checked
                 }))}
-                className="form-checkbox h-4 w-4 text-blue-600"
+                className="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500"
               />
-              <span className="text-sm text-gray-300">
+              <span className="text-sm text-gray-700 dark:text-gray-300">
                 Publish Immediately
               </span>
             </label>
           </div>
 
           {/* Image Upload */}
-          <div className="col-span-1 md:col-span-2">
+          <div className="col-span-2">
             <ImageUploader
               label="Featured Image"
               onFileSelect={handleImageUpload}
@@ -245,39 +257,42 @@ export default function AddDashboardPostForm({ initialData, onSubmit }) {
             />
           </div>
 
-          {/* Description Field */}
-          <div className="col-span-1 md:col-span-2">
+          {/* Description */}
+          <div className="col-span-2">
             <Input
-              label="Description"
+              label="Short Description"
               name="description"
               value={formData.description}
               onChange={handleInputChange}
-              placeholder="Enter short description"
+              placeholder="A brief summary of your post"
               error={errors.description}
               multiline="true"
+              rows={3}
             />
           </div>
 
-          {/* Content Field */}
-          <div className="col-span-1 md:col-span-2">
+          {/* Content */}
+          <div className="col-span-2">
             <TextArea
-              label="Content"
+              label="Post Content"
               name="content"
               value={formData.content}
               onChange={handleInputChange}
               placeholder="Write your post content here..."
-              rows={8}
+              rows={10}
               error={errors.content}
               required
             />
           </div>
         </div>
 
-        <div className="flex justify-end pt-6 border-t border-gray-700">
+        <div className="flex justify-end pt-6 border-t border-gray-200 dark:border-gray-700">
           <button
             type="submit"
             disabled={isSubmitting || categories.length === 0}
-            className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className={`inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+              isSubmitting || categories.length === 0 ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           >
             {isSubmitting ? (
               <>

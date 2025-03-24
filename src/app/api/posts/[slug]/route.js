@@ -1,12 +1,9 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/lib/auth';
 import { v2 as cloudinary } from 'cloudinary';
 import slugify from 'slugify';
 import { adminOnly } from '@/lib/authMiddleware';
 
-// Configure Cloudinary
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -22,16 +19,11 @@ const errorResponse = (message, status = 500) => {
 const parseRequestBody = async (request) => {
   try {
     const contentType = request.headers.get('content-type') || '';
-    
-    if (contentType.includes('application/json')) {
-      return await request.json();
-    }
-    
+    if (contentType.includes('application/json')) return await request.json();
     if (contentType.includes('multipart/form-data')) {
       const formData = await request.formData();
       return Object.fromEntries(formData.entries());
     }
-    
     return null;
   } catch (error) {
     console.error('Parsing error:', error);
@@ -47,193 +39,115 @@ const generateSlug = (title) => {
   });
 };
 
-const handleSlugConflict = async (slug) => {
-  const existingPost = await prisma.post.findUnique({
-    where: { slug },
-    select: { id: true }
-  });
-  return !!existingPost;
-};
-
-// Unified PUT handler with slug management
-export const PUT = adminOnly(async (req, { params }) => {
+// GET handler
+export async function GET(request, { params }) {
   try {
-    const { slug } = await params;
-    if (!slug) return errorResponse('Missing post identifier', 400);
+    const { slug } = params;
+    const post = await prisma.post.findFirst({
+      where: { OR: [{ slug }, { oldSlugs: { has: slug }}] },
+      include: {
+        author: { select: { id: true, name: true, email: true, image: true, profile: true } },
+        category: { select: { name: true } },
+      },
+    });
+    if (!post) return errorResponse('Post not found', 404);
+    if (post.slug !== slug) {
+      return NextResponse.redirect(new URL(`/posts/${post.slug}`, request.nextUrl.origin), { status: 301 });
+    }
+    return NextResponse.json(post);
+  } catch (error) {
+    console.error('Fetch error:', error);
+    return errorResponse('Internal Server Error', 500);
+  }
+}
 
-    const session = await getServerSession(authOptions);
-    if (!session) return errorResponse('Unauthorized', 401);
-
+// PUT handler
+export const PUT = adminOnly(async (request, { params }) => {
+  try {
+    const { slug } = params;
     const body = await parseRequestBody(request);
     if (!body) return errorResponse('Invalid request format', 400);
 
-    // Validate required fields
-    if (!body.title?.trim()) return errorResponse('Title is required', 400);
-    if (!body.content?.trim()) return errorResponse('Content is required', 400);
-
-
-    // Simplified slug handling for edits
-  const generateSlug = (title, existingSlug) => {
-    if (existingSlug) {
-      const currentTitleSlug = slugify(title, { lower: true, strict: true });
-      return currentTitleSlug === existingSlug ? existingSlug : currentTitleSlug;
-    }
-    return slugify(title, { lower: true, strict: true });
-  };
-
-    // Get current post data
     const currentPost = await prisma.post.findUnique({
       where: { slug },
-      select: { title: true, slug: true}
+      select: { id: true, title: true, slug: true, oldSlugs: true }
     });
-
-    
-
     if (!currentPost) return errorResponse('Post not found', 404);
 
-    // Generate new slug if title changes
-    const newTitle = body.title.trim();
-    const newSlug = generateSlug(newTitle, currentPost.slug);
-    const slugChanged = newSlug !== currentPost.slug;
+    const updateData = {
+      content: body.content?.trim(),
+      description: body.description?.trim(),
+      categoryId: body.categoryId ? Number(body.categoryId) : undefined,
+      published: body.published !== undefined ? body.published === 'true' : undefined,
+    };
 
-// Handle slug conflict only if slug changed
-    if (slugChanged) {
-    const slugExists = await prisma.post.findFirst({
-      where: { OR: [{ slug: newSlug }, { oldSlugs: { has: newSlug } }] }
-    });
-    if (slugExists) return errorResponse('Title already exists', 409);
+    // Handle title change
+    if (body.title?.trim()) {
+      const newTitle = body.title.trim();
+      const newSlug = generateSlug(newTitle);
+      
+      // Check for slug conflict only if slug would change
+      if (newSlug !== currentPost.slug) {
+        const existingPost = await prisma.post.findFirst({
+          where: {
+            slug: newSlug,
+            NOT: { id: currentPost.id } // Exclude current post
+          }
+        });
+        if (existingPost) {
+          return errorResponse('A post with this title already exists. Please choose a different title.', 409);
+        }
+        updateData.title = newTitle;
+        updateData.slug = newSlug;
+        updateData.oldSlugs = { set: [...currentPost.oldSlugs, currentPost.slug] };
+      }
     }
 
-    // Process image upload
-    let imageUrl = body.image;
-    const imageFile = body.image instanceof File ? body.image : null;
-
-    if (imageFile) {
+    // Handle image upload
+    if (body.image) {
       try {
-        const buffer = Buffer.from(await imageFile.arrayBuffer());
-        const base64Image = `data:${imageFile.type};base64,${buffer.toString('base64')}`;
-        const uploadResult = await cloudinary.uploader.upload(base64Image, {
-          folder: 'blog-uploads'
-        });
-        imageUrl = uploadResult.secure_url;
-      } catch (uploadError) {
-        console.error('Image upload error:', uploadError);
+        const imageFile = body.image instanceof File ? body.image : null;
+        if (imageFile) {
+          const buffer = Buffer.from(await imageFile.arrayBuffer());
+          const base64Image = `data:${imageFile.type};base64,${buffer.toString('base64')}`;
+          const uploadResult = await cloudinary.uploader.upload(base64Image, {
+            folder: 'blog-uploads'
+          });
+          updateData.image = uploadResult.secure_url;
+        } else {
+          updateData.image = body.image;
+        }
+      } catch (error) {
+        console.error('Image upload error:', error);
         return errorResponse('Image upload failed', 400);
       }
     }
 
-    // Prepare update data
-    const updateData = {
-      title: newTitle,
-      content: body.content.trim(),
-      ...(slugChanged && { 
-        slug: newSlug,
-        oldSlugs: { set: [...currentPost.oldSlugs, currentPost.slug] }
-      }),
-      description: body.description?.trim() || '',
-      categoryId: body.categoryId ? Number(body.categoryId) : undefined,
-      authorId: body.authorId?.toString(),
-      published: body.published ? body.published === 'true' : undefined,
-      ...(imageUrl && { image: imageUrl })
-    };
-
-    // Update post
     const updatedPost = await prisma.post.update({
       where: { slug },
       data: updateData,
-      include: {
-        author: {
-          select: {
-            id: true,
-            name: true,
-            profile: true // Include the author's profile
-          }
-        }
-      }
+      include: { author: { select: { id: true, name: true, profile: true } } }
     });
 
-    return NextResponse.json({
-      ...updatedPost,
-      slugChanged,
-      newSlug: slugChanged ? newSlug : null
-    });
-
+    return NextResponse.json(updatedPost);
   } catch (error) {
     console.error('Update error:', error);
-    if (error.code === 'P2002') {
-      return errorResponse('Slug conflict detected', 409);
-    }
     return errorResponse(error.message || 'Error updating post');
   }
-}
+});
 
-);
-// Enhanced GET handler with slug redirection
-export async function GET(request, { params }) {
+// DELETE handler
+export const DELETE = adminOnly(async (request, { params }) => {
   try {
-    const { slug } = await params;
-    if (!slug) return NextResponse.json({ error: 'Missing post identifier' }, { status: 400 });
-
-    const post = await prisma.post.findFirst({
-      where: {
-        OR: [
-          { slug },
-          { oldSlugs: { has: slug } }
-        ]
-      },
-      include: {
-        author: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            image: true,
-            profile: true,
-          },
-        },
-        category: { select: { name: true } },
-      },
-    });
-
-    if (!post) return NextResponse.json({ error: 'Post not found' }, { status: 404 });
-
-    // Redirect to current slug if accessed via old slug
-    if (post.slug !== slug) {
-      return NextResponse.redirect(
-        new URL(`/posts/${post.slug}`, process.env.NEXTAUTH_URL),
-        { status: 301 }
-      );
-    }
-
-    return NextResponse.json(post);
-  } catch (error) {
-    console.error('Fetch error:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
-  }
-}
-
-// DELETE handler remains similar but with slug history cleanup
-export const DELETE = adminOnly(async (req, { params }) => {
-  try {
-    const { slug } = await params;
-    if (!slug) return errorResponse('Missing post identifier', 400);
-
-    const session = await getServerSession(authOptions);
-    if (!session) return errorResponse('Unauthorized', 401);
-
-    const deletedPost = await prisma.post.delete({
-      where: { slug }
-    });
-
-    return NextResponse.json({ 
+    const { slug } = params;
+    const deletedPost = await prisma.post.delete({ where: { slug } });
+    return NextResponse.json({
       success: true,
-      message: 'Post deleted permanently',
-      deletedSlug: deletedPost.slug,
-      affectedOldSlugs: deletedPost.oldSlugs
+      message: 'Post deleted successfully',
+      deletedSlug: deletedPost.slug
     });
-
   } catch (error) {
     console.error('Deletion error:', error);
     return errorResponse(error.message || 'Error deleting post');
   }
-})
+});

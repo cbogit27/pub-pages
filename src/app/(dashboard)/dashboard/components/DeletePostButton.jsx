@@ -11,14 +11,20 @@ export default function DeletePostButton({ slug, onDelete }) {
       try {
         const response = await fetch(`/api/posts/${slug}`, {
           method: "DELETE",
+          headers: {
+            'Content-Type': 'application/json',
+          },
         });
 
+        const data = await response.json();
+        
         if (!response.ok) {
-          throw new Error("Failed to delete post");
+          throw new Error(data.error || 'Failed to delete post');
         }
 
-        toast.success("Post deleted successfully");
-        onDelete(); // Trigger posts refresh
+        toast.success(data.message || "Post deleted successfully");
+        if (onDelete) onDelete();
+        router.refresh();
       } catch (error) {
         toast.error(error.message);
       }
@@ -26,7 +32,11 @@ export default function DeletePostButton({ slug, onDelete }) {
   };
 
   return (
-    <button onClick={handleDelete} className="text-red-500 hover:text-red-700">
+    <button 
+      onClick={handleDelete} 
+      className="text-red-500 hover:text-red-700"
+      aria-label="Delete post"
+    >
       <AiTwotoneDelete size={20} />
     </button>
   );
