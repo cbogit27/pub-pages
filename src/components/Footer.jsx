@@ -8,8 +8,8 @@ export default function Footer(){
     const fullYear = (new Date().getFullYear())
     return (
         <footer className="mt-auto">
-            <div className="flex items-center justify-between">
-            <div className="justify-start text-sm font-light py-8">
+            <div className="flex flex-col md:flex-row items-center justify-between">
+            <div className="justify-start text-sm font-light py-2 md:py-8">
                 <p className="py-2">&copy; Concept.pro, All rights reserved {fullYear}</p>
                 <ul className="flex justify-start text-xs space-x-2">
                 <li><Link href={'/about'}>About us</Link></li>
@@ -22,8 +22,8 @@ export default function Footer(){
                 
                 </ul>
             </div>
-            <div className="py-8">
-                <div className="flex space-x-4 py-2 text-end justify-end">
+            <div className="py-2 md:py-8">
+                <div className="flex space-x-4 py-2 text center justify-center md:text-end md:justify-end">
                     <PiDiscordLogoThin size={20}/>
                     
                     <RiTwitterXLine size={20}/>
