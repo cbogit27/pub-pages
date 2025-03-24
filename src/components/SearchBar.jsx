@@ -1,4 +1,3 @@
-// components/SearchBar.js
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -7,7 +6,7 @@ import { RxCross2 } from "react-icons/rx";
 
 export default function SearchBar() {
   const [query, setQuery] = useState("");
-  const [isSearchOpen, setIsSearchOpen] = useState(false); // State to toggle search input
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const router = useRouter();
 
   const handleSearch = (e) => {
@@ -15,51 +14,50 @@ export default function SearchBar() {
     const searchParams = new URLSearchParams();
     if (query) searchParams.set("q", query);
     router.push(`/search?${searchParams.toString()}`);
-    setIsSearchOpen(false); // Close the search input after submission
+    setIsSearchOpen(false);
   };
 
   const toggleSearch = () => {
     setIsSearchOpen(!isSearchOpen);
-    setQuery(""); // Clear the search input when toggling
+    setQuery(""); // Reset search field when toggling
   };
 
   return (
     <div className="relative">
-      {/* Search Icon */}
+      {/* Search Icon (Opens Search) */}
       {!isSearchOpen && (
-        <button onClick={toggleSearch} className="p-2">
-          <CiSearch size={20} className="cursor-pointer" />
+        <button 
+          onClick={toggleSearch} 
+          className="p-2 focus:outline-none"
+          aria-label="Open search"
+        >
+          <CiSearch size={22} className="cursor-pointer text-gray-700" />
         </button>
       )}
 
-      {/* Search Input and Button */}
+      {/* Search Input & Close Button */}
       {isSearchOpen && (
-        <div className="absolute top-12 right-0 bg-slate-300 shadow-lg rounded-full">
-          <form onSubmit={handleSearch} className="flex items-center gap-2">
-          <div
-              
-              className="text-white py-4 px-2"
-            >
-              <CiSearch size={30} />
-            </div>
+        <div className="absolute top-10 right-0 bg-white shadow-lg rounded-full flex items-center border border-gray-300 w-80 md:w-96 p-2">
+          <CiSearch size={22} className="text-gray-500 ml-3" />
+          <form onSubmit={handleSearch} className="flex flex-1">
             <input
-              type="text" 
+              type="text"
               placeholder="Search posts..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="py-2 bg-slate-300 text-gray-800 outline-none w-80 md:w-96"
+              className="bg-transparent text-gray-800 outline-none flex-1 px-2 py-1"
+              autoComplete="on"
+              data-autocomplete="true"
             />
-            {/* Search Button */}
-            
-            {/* Close Button (X) */}
-            <button
-              type="button"
-              onClick={toggleSearch}
-              className="p-4 text-gray-600 hover:text-gray-900"
-            >
-              <RxCross2 size={30} />
-            </button>
           </form>
+          <button
+            type="button"
+            onClick={toggleSearch}
+            className="p-2 mr-2 text-gray-600 hover:text-gray-900 focus:outline-none"
+            aria-label="Close search"
+          >
+            <RxCross2 size={22} />
+          </button>
         </div>
       )}
     </div>
