@@ -34,7 +34,7 @@ export default function SearchPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Search Results</h1>
+      <h1 className="text-3xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-br from-gray-600 to-gray-900">Search Results</h1>
       {loading ? (
         <p>Loading...</p>
       ) : posts.length > 0 ? (

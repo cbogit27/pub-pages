@@ -93,8 +93,8 @@ export default function Home() {
                   </p>
                   <h2
                   
-                  className="text-xl font-semibold mb-2 line-clamp-1">{post.title}</h2>
-                  <p className="text-sm text-gray-600 mb-2 line-clamp-2">{post.description}</p>
+                  className="text-xl font-semibold mb-2 line-clamp-2">{post.title}</h2>
+                  <p className="text-sm text-gray-600 mb-2 line-clamp-3">{post.description}</p>
                   <div className="flex items-center justify-between text-sm text-gray-500">
                     <span className="text-xs font-light">By {post.author?.name}</span>
                     <span className="px-2 py-1 bg-gray-100 rounded">

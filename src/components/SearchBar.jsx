@@ -47,7 +47,6 @@ export default function SearchBar() {
               onChange={(e) => setQuery(e.target.value)}
               className="bg-transparent text-gray-800 outline-none flex-1 px-2 py-1"
               autoComplete="on"
-              data-autocomplete="true"
             />
           </form>
           <button
