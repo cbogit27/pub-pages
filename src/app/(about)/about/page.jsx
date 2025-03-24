@@ -8,7 +8,7 @@ import Arrow from "@/components/Arrow";
 export default function AboutPage(){
     return (
         <div className="flex flex-col md:flex-row h-full md:h-screen ">
-            <div className="md:w-72 flex-auto bg-transparent text-gray-300 p-8">
+            <div className="md:w-72 flex-auto bg-transparent text-gray-300 py-8">
                 <div>
                         <Link href={"/"} className="text-md cursor-pointer">
                           Six O'Clock
@@ -58,28 +58,28 @@ export default function AboutPage(){
             </div>
 
 
-            <div className="md:w-28 flex-auto bg-slate-800/40 text-gray-200 p-8">
-            <div className="justify-start text-start space-y-12">
-            <div className="">
-            <h3 className="text-xl font-semibold uppercase tracking-wide">Find out more about our content, Join the newsletter</h3>    
+            <div className="md:w-28 flex-auto bg-slate-800/40 text-gray-200 py-8 px-2">
+            <div className=" space-y-12">
+            <div className="justify-start text-start p-2">
+            <h3 className="text-xl font-semibold uppercase tracking-wide">Subscribe,</h3>
+            <h5 className="text-lg font-normal tracking-tight">The newsletter</h5>
             </div> 
-            <div className="">
-                <input className="px-4 py-2 text-gray-600 bg-transparent outline-1" placeholder="Enter email"/>
+            <div className="justify-start text-start p-2">
+                <input className="px-4 py-2 text-gray-600 bg-transparent outline" placeholder="Enter email"/>
                 <button className="bg-gray-400 text-cyan-800 px-4 py-2">submit</button>
             </div>
-            <div className="text-end justify-end">
-                <h3 className="text-2xl font-bold uppercase tracking-widest ml-8">gain dynamic insights shaping today's Business & technology</h3>
+            <div className="text-end justify-end p-2">
+                <h3 className="text-2xl font-bold uppercase tracking-widest ml-8">dynamic insights on Business & technology Industries</h3>
             </div>
-            <div className="text-end justify-end space-y-2">
+            <div className="text-end justify-end space-y-2 p-2">
                 <h6 className="text-xs font-bold">For consults, reach us here</h6>
                 <p className="text-xs font-light">+234816XXXXXX</p>
                 <p className="text-xs font-light">info@winbeyondcrude.pro</p>
-            </div>
-            <div className="text-end justify-end mt-8">
-            <Link href={'/'}>
+                <Link href={'/'} className="mt-4 text-xs">
                 <Arrow text={"return home"}/>
             </Link>
             </div>
+            
             </div>
             </div>
   
