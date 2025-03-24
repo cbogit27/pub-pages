@@ -1,5 +1,5 @@
 "use client";
-import AddDashboardPostForm from '@/app/dashboard/components/post-add-form';
+import AddDashboardPostForm from '@/app/(dashboard)/dashboard/components/post-add-form';
 
 export default function CreatePostPage() {
   const handleSubmit = async (formData) => {

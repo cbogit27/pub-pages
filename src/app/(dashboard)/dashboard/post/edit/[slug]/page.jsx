@@ -1,7 +1,7 @@
 "use client";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import AddDashboardPostForm from "@/app/dashboard/components/post-add-form";
+import AddDashboardPostForm from "@/app/(dashboard)/dashboard/components/post-add-form";
 
 export default function EditPostPage() {
   const { slug } = useParams();
