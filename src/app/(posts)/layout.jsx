@@ -4,7 +4,7 @@ import SideBar from "./posts/[slug]/@sideBar/page";
 import Socials from "./posts/[slug]/@socials/page";
 import Footer from "@/components/Footer";
 
-export default function Layout({ children, mainPost, sideBar, socials, authorId, currentPostId }) {
+export default function PostsLayout({ children, mainPost, sideBar, socials, authorId, currentPostId }) {
   return (
     <main>
       <Header/>

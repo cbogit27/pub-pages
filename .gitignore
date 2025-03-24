@@ -42,4 +42,4 @@ next-env.d.ts
 
 # Ignore Docker configuration files
 Dockerfile*
-docker-compose.yml*
+compose.yaml*
