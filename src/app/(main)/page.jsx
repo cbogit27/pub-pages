@@ -85,6 +85,7 @@ export default function Home() {
                     alt={post.title}
                     fill
                     className="w-full h-full object-cover"
+                    priority
                   />
                 </div>
                 <div className="p-4 space-y-8">

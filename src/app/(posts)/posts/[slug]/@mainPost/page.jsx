@@ -55,7 +55,7 @@ export default function PostPage() {
 
           {/* Title Overlay */}
           <div className="absolute bottom-4 left-0 w-full p-4">
-            <h1 className="text-white text-2xl md:text-4xl font-extrabold bg-gray-700/80 p-2 rounded">
+            <h1 className="text-white text-xl md:text-3xl font-extrabold bg-gray-700/80 p-2 rounded">
               {post.title}
             </h1>
           </div>

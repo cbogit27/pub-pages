@@ -41,8 +41,9 @@ export default function OtherPosts({ currentPostId }) {
                 src={post.image}
                 alt={post.title}
                 width={100}
-                height={100}
+                height={50}
                 className="object-cover "
+                priority
               />
             )}
             <div>
