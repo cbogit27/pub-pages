@@ -73,7 +73,7 @@ export default function AboutPage(){
                 </form>
             </div>
             <div className="text-end justify-end p-2">
-                <h3 className="text-2xl font-bold uppercase tracking-widest ml-8">dynamic insights on Business & technology Industries</h3>
+                <h3 className="text-lg md:text-2xl font-bold uppercase tracking-widest ml-8">dynamic insights on Business & technology Industries</h3>
             </div>
             <div className="text-end justify-end space-y-2 p-2">
                 <h6 className="text-xs font-bold">For consults, reach us here</h6>
