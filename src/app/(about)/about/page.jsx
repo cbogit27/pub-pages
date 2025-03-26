@@ -63,11 +63,11 @@ export default function AboutPage(){
             </div> 
             <div className="justify-start text-start p-2">
                 <form className="space-y-4">
-                <input className="px-4 py-2 text-gray-600 bg-transparent border border-gray-200/20 rounded-full  w-full" placeholder="Enter email"/>
+                <input className="p-4 text-gray-600 bg-transparent border border-gray-200/20 rounded-full  w-full" placeholder="Enter email"/>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 ">
                     
-                <input className="px-4 py-2 text-gray-600 bg-transparent border border-gray-200/20 rounded-full w-full" placeholder="first name"/>
-                <input className="px-4 py-2 text-gray-600 bg-transparent border border-gray-200/20 rounded-full w-full " placeholder="last name"/>
+                <input className="p-4 text-gray-600 bg-transparent border border-gray-200/20 rounded-full w-full" placeholder="first name"/>
+                <input className="p-4 text-gray-600 bg-transparent border border-gray-200/20 rounded-full w-full " placeholder="last name"/>
                 </div>
                 <button className="bg-gray-400 text-cyan-800 px-4 py-2 rounded-full">submit</button>
                 </form>
