@@ -58,18 +58,18 @@ export default function AboutPage(){
             <div className="md:w-28 flex-auto bg-slate-800/40 text-gray-200 py-8 px-2 md:px-8">
             <div className=" space-y-8">
             <div className="justify-start text-start p-2">
-            <h3 className="text-xl font-semibold uppercase tracking-wide">Subscribe,</h3>
-            <h5 className="text-lg font-normal tracking-tight">The newsletter</h5>
+            <h3 className="text-xl font-semibold uppercase tracking-wide">Subscribe</h3>
+            
             </div> 
             <div className="justify-start text-start p-2">
                 <form className="space-y-4">
-                <input className="px-4 py-2 text-gray-600 bg-transparent border border-gray-200/20 rounded-md  w-full" placeholder="Enter email"/>
+                <input className="px-4 py-2 text-gray-600 bg-transparent border border-gray-200/20 rounded-full  w-full" placeholder="Enter email"/>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 ">
                     
-                <input className="px-4 py-2 text-gray-600 bg-transparent border border-gray-200/20 rounded-md w-full" placeholder="first name"/>
-                <input className="px-4 py-2 text-gray-600 bg-transparent border border-gray-200/20 rounded-md w-full " placeholder="last name"/>
+                <input className="px-4 py-2 text-gray-600 bg-transparent border border-gray-200/20 rounded-full w-full" placeholder="first name"/>
+                <input className="px-4 py-2 text-gray-600 bg-transparent border border-gray-200/20 rounded-full w-full " placeholder="last name"/>
                 </div>
-                <button className="bg-gray-400 text-cyan-800 px-4 py-2">submit</button>
+                <button className="bg-gray-400 text-cyan-800 px-4 py-2 rounded-full">submit</button>
                 </form>
             </div>
             <div className="text-end justify-end p-2">
@@ -78,7 +78,7 @@ export default function AboutPage(){
             <div className="text-end justify-end space-y-2 p-2">
                 <h6 className="text-xs font-bold">For consults, reach us here</h6>
                 <p className="text-xs font-light">+234816XXXXXX</p>
-                <p className="text-xs font-light">info@winbeyondcrude.pro</p>
+                <p className="text-xs font-light">test@winbeyondcrude.pro</p>
                 <Link href={'/'} className="mt-4 text-xs">
                 <Arrow text={"return home"}/>
             </Link>
