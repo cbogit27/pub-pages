@@ -50,7 +50,7 @@ export default function Home() {
   }
 
   return (
-    <div className="py-8">
+    <div className="py-12 md:py-8">
       <motion.h1
       initial={{ y:yTop}}
       animate={{ y: 1 }}
@@ -58,7 +58,7 @@ export default function Home() {
       viewport={{ once: true, amount: 0.8 }}
       transition={{  type: "spring", delay: 1,duration: 3.5,opacity: 1,
       layout: { duration: 1 } }}
-      className="text-3xl font-bold uppercase mb-8 text-center text-transparent bg-clip-text bg-gradient-to-br from-gray-600 to-gray-900">Latest Posts</motion.h1>
+      className="text-3xl font-bold uppercase my-8 md:mb-8 text-center text-transparent bg-clip-text bg-gradient-to-br from-gray-600 to-gray-900">Latest Posts</motion.h1>
       {posts.length === 0 ? (
         <div className="text-center py-8">
           <p className="text-gray-500">No posts available yet.</p>

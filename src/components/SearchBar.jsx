@@ -37,8 +37,8 @@ export default function SearchBar() {
 
       {/* Search Input & Close Button */}
       {isSearchOpen && (
-        <div className="absolute top-10 right-0 bg-white shadow-lg rounded-full flex items-center border border-gray-300 w-80 md:w-96 p-2">
-          <CiSearch size={22} className="text-gray-500 ml-3" />
+        <div className="absolute top-10 right-0 bg-gray-300 shadow-lg rounded-full flex items-center border border-gray-300 w-80 md:w-96 p-2">
+          <CiSearch size={22} className="text-gray-800 ml-3" />
           <form onSubmit={handleSearch} className="flex flex-1">
             <input
               type="text"
@@ -52,7 +52,7 @@ export default function SearchBar() {
           <button
             type="button"
             onClick={toggleSearch}
-            className="p-2 mr-2 text-gray-600 hover:text-gray-900 focus:outline-none"
+            className="p-2 mr-2 text-gray-800 hover:text-gray-900 focus:outline-none"
             aria-label="Close search"
           >
             <RxCross2 size={22} />
