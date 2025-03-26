@@ -56,14 +56,21 @@ export default function AboutPage(){
 
 
             <div className="md:w-28 flex-auto bg-slate-800/40 text-gray-200 py-8 px-2 md:px-8">
-            <div className=" space-y-12">
+            <div className=" space-y-8">
             <div className="justify-start text-start p-2">
             <h3 className="text-xl font-semibold uppercase tracking-wide">Subscribe,</h3>
             <h5 className="text-lg font-normal tracking-tight">The newsletter</h5>
             </div> 
             <div className="justify-start text-start p-2">
-                <input className="px-4 py-2 text-gray-600 bg-transparent outline" placeholder="Enter email"/>
+                <form className="space-y-4">
+                <input className="px-4 py-2 text-gray-600 bg-transparent border border-gray-200/20 rounded-md  w-full" placeholder="Enter email"/>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 ">
+                    
+                <input className="px-4 py-2 text-gray-600 bg-transparent border border-gray-200/20 rounded-md w-full" placeholder="first name"/>
+                <input className="px-4 py-2 text-gray-600 bg-transparent border border-gray-200/20 rounded-md w-full " placeholder="last name"/>
+                </div>
                 <button className="bg-gray-400 text-cyan-800 px-4 py-2">submit</button>
+                </form>
             </div>
             <div className="text-end justify-end p-2">
                 <h3 className="text-2xl font-bold uppercase tracking-widest ml-8">dynamic insights on Business & technology Industries</h3>
