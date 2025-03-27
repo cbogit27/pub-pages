@@ -42,7 +42,7 @@ const generateSlug = (title) => {
 // GET handler
 export async function GET(request, { params }) {
   try {
-    const { slug } = params;
+    const { slug } = await params;
     const post = await prisma.post.findFirst({
       where: { OR: [{ slug }, { oldSlugs: { has: slug }}] },
       include: {
@@ -64,7 +64,7 @@ export async function GET(request, { params }) {
 // PUT handler
 export const PUT = adminOnly(async (request, { params }) => {
   try {
-    const { slug } = params;
+    const { slug } = await params;
     const body = await parseRequestBody(request);
     if (!body) return errorResponse('Invalid request format', 400);
 
@@ -139,7 +139,7 @@ export const PUT = adminOnly(async (request, { params }) => {
 // DELETE handler
 export const DELETE = adminOnly(async (request, { params }) => {
   try {
-    const { slug } = params;
+    const { slug } = await params;
     const deletedPost = await prisma.post.delete({ where: { slug } });
     return NextResponse.json({
       success: true,

@@ -1,6 +1,6 @@
 export default function PostSkeleton() {
     return (
-      <div className="max-w-4xl mx-auto px-4 animate-pulse">
+      <div className="animate-pulse">
         {/* Header Skeleton */}
         <header className="mb-8">
           <div className="flex items-center gap-2 md:gap-4 text-xs">

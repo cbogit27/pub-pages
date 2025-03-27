@@ -31,7 +31,7 @@ export default function PostPage() {
   if (error) return <div className="text-red-500 p-8">{error}</div>;
 
   return (
-    <article className="max-w-4xl mx-auto px-4">
+    <article>
       <header className="mb-8">
         <div className="flex items-center gap-2 md:gap-4 text-xs text-gray-600">
           <span>{post.author?.name}</span>
