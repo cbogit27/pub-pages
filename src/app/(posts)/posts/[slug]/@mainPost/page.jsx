@@ -57,9 +57,9 @@ export default function PostPage() {
 
           {/* Title Overlay */}
           <div className="absolute bottom-4 left-0 w-full p-4">
-            <h1 className="text-white text-xl md:text-3xl font-extrabold bg-gray-700/80 p-2 rounded">
+            <div className="text-white text-xl md:text-3xl font-extrabold bg-gray-700/80 px-4 py-2 rounded inline-block">
               {post.title}
-            </h1>
+            </div>
           </div>
         </div>
       )}
@@ -74,6 +74,11 @@ export default function PostPage() {
           className="text-sm md:text-md font-normal text-gray-600"
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
+      </div>
+
+      <div className="flex items-center justify-start gap-2">
+        <p className="text-sm">Share:</p>
+        <SocialsMobile/>
       </div>
 
       <CommentSection postId={post.id} />

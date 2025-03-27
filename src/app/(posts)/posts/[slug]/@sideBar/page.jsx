@@ -5,7 +5,7 @@ export default function SideBar({ userId, currentPostId }) {
   console.log('SideBar received authorId:', userId);
 
   return (
-    <section className="flex flex-col">
+    <section className="flex flex-col py-8 md:py-0">
       {/* Profile Section */}
       <section className="w-auto h-auto p-4">
         <div className="space-y-4">

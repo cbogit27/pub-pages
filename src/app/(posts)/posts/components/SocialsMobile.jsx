@@ -21,7 +21,7 @@ export default function SocialsMobile() {
                     url={'https://github.com/next-share'}
                     title={'next-share is a social share buttons for your next React apps.'}
                     >
-                    <TwitterIcon size={25} rectangle="true" />
+                    <TwitterIcon size={20} rectangle="true" />
                 </TwitterShareButton>
                 </div>
                 <div>
@@ -31,7 +31,7 @@ export default function SocialsMobile() {
                     hashtag={'#nextshare'}
                     
                     >
-                    <FacebookIcon size={25} rectangle="true"  />
+                    <FacebookIcon size={20} rectangle="true"  />
                     </FacebookShareButton>
                 </div>
                 
@@ -42,7 +42,7 @@ export default function SocialsMobile() {
                         subject={'Next Share'}
                         body="body"
                         >
-                        <EmailIcon size={25} rectangle="true" />
+                        <EmailIcon size={20} rectangle="true" />
                     </EmailShareButton>
                 </div>
         
@@ -52,7 +52,7 @@ export default function SocialsMobile() {
                     title={'next-share is a social share buttons for your next React apps.'}
                     separator=":: "
                     >
-                    <WhatsappIcon size={25} rectangle="true"/>
+                    <WhatsappIcon size={20} rectangle="true"/>
                     </WhatsappShareButton>
                 </div>
                 </div>
