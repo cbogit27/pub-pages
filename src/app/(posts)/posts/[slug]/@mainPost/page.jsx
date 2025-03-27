@@ -77,7 +77,7 @@ export default function PostPage() {
       </div>
 
       <div className="flex items-center justify-start gap-2">
-        <p className="text-sm">Share:</p>
+        <p className="text-sm flex md:hidden">Share:</p>
         <SocialsMobile/>
       </div>
 
