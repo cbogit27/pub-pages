@@ -5,6 +5,7 @@ import Image from "next/image";
 import { format } from "date-fns";
 import CommentSection from "@/components/CommentSection";
 import PostSkeleton from "../../components/MainPostSkelecton";
+import SocialsMobile from "@/app/(posts)/posts/components/SocialsMobile";
 
 export default function PostPage() {
   const { slug } = useParams();
@@ -32,7 +33,7 @@ export default function PostPage() {
 
   return (
     <article>
-      <header className="mb-8">
+      <header className="mb-4">
         <div className="flex items-center gap-2 md:gap-4 text-xs text-gray-600">
           <span>{post.author?.name}</span>
           <span>•</span>
@@ -40,6 +41,7 @@ export default function PostPage() {
           <span>•</span>
           <span className="bg-gray-100 px-2 py-1 rounded">{post.category?.name}</span>
         </div>
+        <SocialsMobile />
       </header>
 
       {post.image && (
