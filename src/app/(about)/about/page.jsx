@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { PiDiscordLogoThin, PiInstagramLogoThin } from "react-icons/pi";
 import { RiTwitterXLine } from "react-icons/ri";
 import Arrow from "@/components/Arrow";
+import SubscriptionForm from "@/components/SubscriptionForm";
 
 export default function AboutPage(){
     return (
@@ -61,17 +62,7 @@ export default function AboutPage(){
             <h3 className="text-xl font-semibold uppercase tracking-wide">Subscribe</h3>
             
             </div> 
-            <div className="justify-start text-start p-2">
-                <form className="space-y-4">
-                <input className="p-4 text-gray-600 bg-transparent border border-gray-200/20 rounded-full  w-full" placeholder="Enter email"/>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 ">
-                    
-                <input className="p-4 text-gray-600 bg-transparent border border-gray-200/20 rounded-full w-full" placeholder="first name"/>
-                <input className="p-4 text-gray-600 bg-transparent border border-gray-200/20 rounded-full w-full " placeholder="last name"/>
-                </div>
-                <button className="bg-gray-400 text-cyan-800 px-4 py-2 rounded-full">submit</button>
-                </form>
-            </div>
+            <SubscriptionForm/>
             <div className="text-end justify-end p-2">
                 <h3 className="text-lg md:text-2xl font-bold uppercase tracking-widest ml-8">dynamic insights on Business & technology Industries</h3>
             </div>
