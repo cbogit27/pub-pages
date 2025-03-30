@@ -4,12 +4,20 @@ import prisma from '@/lib/prisma';
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
-  const q = searchParams.get('q'); // Get the 'q' query parameter
+  const q = searchParams.get('q');
+
+  if (!q) {
+    return NextResponse.json([], { status: 200 });
+  }
 
   try {
     const posts = await prisma.post.findMany({
       where: {
-        title: { contains: q, mode: 'insensitive' }, // Search by title only
+        OR: [
+          { title: { contains: q, mode: 'insensitive' } },
+          { description: { contains: q, mode: 'insensitive' } },
+          { content: { contains: q, mode: 'insensitive' } }
+        ]
       },
       include: {
         author: {
@@ -25,9 +33,12 @@ export async function GET(request) {
           },
         },
       },
+      orderBy: {
+        createdAt: 'desc'
+      }
     });
 
-    return NextResponse.json(posts); // Return the search results as JSON
+    return NextResponse.json(posts);
   } catch (error) {
     console.error('Search error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
