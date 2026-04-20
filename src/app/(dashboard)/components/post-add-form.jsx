@@ -13,7 +13,7 @@ export default function AddDashboardPostForm({ initialData, onSubmit }) {
   const { data: session, status } = useSession({
     required: true,
     onUnauthenticated() {
-      router.push("/auth/signin");
+      router.push("/signin");
     },
   });
 
@@ -35,7 +35,7 @@ export default function AddDashboardPostForm({ initialData, onSubmit }) {
   // Redirect if not authenticated or not admin
   useEffect(() => {
     if (status === "unauthenticated") {
-      router.push("/auth/signin");
+      router.push("/signin");
       return;
     }
 

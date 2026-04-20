@@ -68,15 +68,15 @@ export const authOptions = {
     }
   },
   pages: {
-    signIn: '/auth/signin',
-    error: '/auth/error'
+    signIn: '/signin',
+    error: '/signin'
   },
   session: {
     strategy: 'jwt',
     maxAge: 4 * 60 * 60 // 4 hours
   },
   secret: process.env.NEXTAUTH_SECRET,
-  debug: process.env.NODE_ENV === 'development'
+  debug: process.env.NEXTAUTH_DEBUG === 'true'
 };
 
 export default NextAuth(authOptions);

@@ -4,21 +4,30 @@ import Image from "next/image";
 import Link from "next/link";
 import { format } from "date-fns";
 import { motion } from "framer-motion"
+import PulseLoader from "@/components/PulseLoader";
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loaderCount, setLoaderCount] = useState(1);
   const [error, setError] = useState(null);
   const [yBottom] = useState(600)
   const [yTop] = useState(-600)
 
   useEffect(() => {
+    const savedPostCount = Number(window.localStorage.getItem("homePostCount"));
+    if (savedPostCount > 0) {
+      setLoaderCount(savedPostCount);
+    }
+
     const fetchPosts = async () => {
       try {
         const response = await fetch("/api/posts/public");
         if (!response.ok) throw new Error("Failed to fetch posts");
         const data = await response.json();
         setPosts(data);
+        setLoaderCount(data.length || 1);
+        window.localStorage.setItem("homePostCount", String(data.length || 1));
       } catch (error) {
         console.error("Error fetching posts:", error);
         setError("Failed to load posts. Please try again later.");
@@ -32,12 +41,7 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-      <div className="relative flex items-center justify-center">
-        <div className="absolute h-12 w-12 border-4 border-slate-800 rounded-full animate-spin border-t-slate-600"></div>
-      </div>
-    </div>
-
+      <PulseLoader count={loaderCount} />
     );
   }
 
@@ -51,14 +55,9 @@ export default function Home() {
 
   return (
     <div className="py-12 md:py-8">
-      <motion.h1
-      initial={{ y:yTop}}
-      animate={{ y: 1 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true, amount: 0.8 }}
-      transition={{  type: "spring", delay: 1,duration: 3.5,opacity: 1,
-      layout: { duration: 1 } }}
-      className="text-3xl font-bold uppercase my-8 md:mb-8 text-center text-transparent bg-clip-text bg-gradient-to-br from-gray-600 to-gray-900">Latest Posts</motion.h1>
+      <h1
+      
+      className="text-3xl font-bold uppercase my-8 md:mb-8 text-center text-transparent bg-clip-text bg-gradient-to-br from-gray-600 to-gray-900">Latest Posts</h1>
       {posts.length === 0 ? (
         <div className="text-center py-8">
           <p className="text-gray-500">No posts available yet.</p>
@@ -72,13 +71,8 @@ export default function Home() {
               key={post.id} 
               className="rounded shadow-md overflow-hidden hover:shadow-lg transition-shadow"
             >
-              <motion.article
-              initial={{ y:yBottom}}
-              animate={{ y: 1 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true, amount: 0.8 }}
-              transition={{  type: "spring", delay: 1,duration: 3.5,opacity: 1,
-              layout: { duration: 1.5 } }}>
+              <article
+              >
                 <div className="relative h-48">
                   <Image
                     src={post.image}
@@ -103,7 +97,7 @@ export default function Home() {
                     </span>
                   </div>
                 </div>
-              </motion.article>
+              </article>
             </Link>
           ))}
         </div>
