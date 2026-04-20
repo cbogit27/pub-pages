@@ -1,15 +1,24 @@
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    experimental: {
-      serverActions: true,
-    },
     reactStrictMode: true,
+    turbopack: {
+      root: __dirname,
+    },
     images: {
       remotePatterns: [
         {
           protocol: 'https',
-          hostname: ('i.ibb.co','res.cloudinary.com'),
-        }
+          hostname: 'i.ibb.co',
+        },
+        {
+          protocol: 'https',
+          hostname: 'res.cloudinary.com',
+        },
       ],
       unoptimized: true,
     }
